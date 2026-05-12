@@ -1,4 +1,4 @@
-# 🔄 Pipeline ETL — Municípios Brasileiros (IBGE)
+# Pipeline ETL — Municípios Brasileiros (IBGE)
 
 Pipeline de dados desenvolvido em Python que extrai informações
 de todos os municípios brasileiros diretamente da API pública do
@@ -7,7 +7,7 @@ carrega o resultado em um banco de dados PostgreSQL.
 
 ---
 
-## 📌 Sobre o projeto
+## Sobre o projeto
 
 Este projeto foi desenvolvido com o objetivo de aplicar na prática
 os fundamentos de Engenharia de Dados, simulando um pipeline ETL
@@ -19,7 +19,7 @@ persistindo os dados de forma estruturada para análise posterior.
 
 ---
 
-## 🏗️ Arquitetura
+## Arquitetura
 [API IBGE] → [extract.py] → [transform.py] → [load.py] → [PostgreSQL]
 ↓                 ↓                 ↓
 JSON bruto        DataFrame         Tabela
@@ -28,7 +28,7 @@ padronizado       5.570 registros
 
 ---
 
-## 🛠️ Stack utilizada
+## Stack utilizada
 
 | Tecnologia      | Uso                                      |
 |-----------------|------------------------------------------|
@@ -42,7 +42,7 @@ padronizado       5.570 registros
 
 ---
 
-## 📁 Estrutura do projeto
+## Estrutura do projeto
 etl-ibge-populacao/
 ├── src/
 │   ├── extract.py           # Extração via API do IBGE
@@ -58,7 +58,7 @@ etl-ibge-populacao/
 
 ---
 
-## ⚙️ Como executar
+## Como executar
 
 ### Pré-requisitos
 - Python 3.11+
@@ -105,7 +105,7 @@ python pipeline.py
 
 ---
 
-## 📊 Resultados e análises
+## Resultados e análises
 
 Após a execução, os dados ficam disponíveis para consulta no
 PostgreSQL. Algumas análises possíveis:
@@ -121,7 +121,7 @@ PostgreSQL. Algumas análises possíveis:
 
 ---
 
-## 💡 Aprendizados e próximos passos
+## Aprendizados e objetivos
 
 Este projeto cobre os fundamentos de um pipeline ETL real.
 Como evolução natural, pretendo:
@@ -133,7 +133,7 @@ Como evolução natural, pretendo:
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Gabryel Rosa Bomfim**
 [LinkedIn](https://linkedin.com/in/gabryel-rosa) •
