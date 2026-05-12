@@ -6,5 +6,5 @@ def extrair_municipios():
     response = requests.get(url)
     response.raise_for_status()
     dados = response.json()
-    print(f"✅ {len(dados)} municípios extraídos com sucesso!")
+    print(f"{len(dados)} municípios extraídos com sucesso!")
     return dados
