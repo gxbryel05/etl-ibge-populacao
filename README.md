@@ -43,18 +43,21 @@ padronizado       5.570 registros
 ---
 
 ## Estrutura do projeto
+```
 etl-ibge-populacao/
 ├── src/
-│   ├── extract.py           # Extração via API do IBGE
-│   ├── transform.py         # Limpeza e transformação com Pandas
-│   ├── load.py              # Carga no PostgreSQL via SQLAlchemy
-│   └── pipeline.py          # Orquestrador do fluxo ETL
+│   ├── extract.py
+│   ├── transform.py
+│   ├── load.py
+│   └── pipeline.py
 ├── sql/
-│   ├── create_tables.sql    # Criação da tabela no banco
-│   └── queries_analise.sql  # Queries de validação e análise
-├── .env.example             # Modelo de variáveis de ambiente
+│   ├── create_tables.sql
+│   └── queries_analise.sql
+├── .env.example
 ├── .gitignore
-└── requirements.txt
+├── requirements.txt
+└── README.md
+```
 
 ---
 
