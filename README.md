@@ -1,34 +1,36 @@
 # Pipeline ETL — Municípios Brasileiros (IBGE)
 
-Pipeline de dados desenvolvido em Python que extrai informações
-de todos os municípios brasileiros diretamente da API pública do
-IBGE, realiza transformações e limpeza dos dados com Pandas e
-carrega o resultado em um banco de dados PostgreSQL.
+Pipeline de dados desenvolvido em Python que extrai informações de todos os municípios brasileiros via API pública do IBGE, realiza transformações e limpeza com Pandas e carrega em PostgreSQL. O projeto evoluiu para incluir orquestração completa com Apache Airflow.
 
 ---
 
-## Sobre o projeto
+## Sobre
 
-Este projeto foi desenvolvido com o objetivo de aplicar na prática
-os fundamentos de Engenharia de Dados, simulando um pipeline ETL
-real com dados públicos brasileiros.
+Projeto construído para aplicar na prática os fundamentos de Engenharia de Dados, simulando um pipeline ETL real com dados públicos brasileiros.
 
-O pipeline processa 5.570 municípios, normalizando estruturas JSON
-aninhadas, padronizando texto, removendo inconsistências e
-persistindo os dados de forma estruturada para análise posterior.
+O pipeline processa 5.570 municípios, normalizando estruturas JSON aninhadas, padronizando texto, removendo inconsistências e persistindo os dados de forma estruturada para análise posterior.
 
 ---
 
 ## Arquitetura
+
+### Fase 1 — Pipeline local
+```
 [API IBGE] → [extract.py] → [transform.py] → [load.py] → [PostgreSQL]
-↓                 ↓                 ↓
-JSON bruto        DataFrame         Tabela
-5.571 registros   limpo e           municipios
-padronizado       5.570 registros
+```
+
+### Fase 2 — Orquestração com Airflow
+```
+[Airflow Scheduler] → DAG: etl_ibge_municipios
+        ↓
+   extrair → transformar → carregar
+      ↓           ↓            ↓
+  API IBGE      Pandas      PostgreSQL
+```
 
 ---
 
-## Stack utilizada
+## Stacks utilizada
 
 | Tecnologia      | Uso                                      |
 |-----------------|------------------------------------------|
@@ -37,83 +39,86 @@ padronizado       5.570 registros
 | Requests        | Consumo da API REST do IBGE              |
 | SQLAlchemy      | Conexão e carga no banco de dados        |
 | PostgreSQL 15   | Armazenamento dos dados                  |
-| Docker          | Ambiente isolado para o PostgreSQL       |
+| Apache Airflow  | Orquestração e agendamento do pipeline   |
+| Docker Compose  | Infraestrutura local                     |
 | Git & GitHub    | Versionamento do projeto                 |
 
 ---
 
 ## Estrutura do projeto
+
 ```
 etl-ibge-populacao/
-├── src/
-│   ├── extract.py
-│   ├── transform.py
-│   ├── load.py
-│   └── pipeline.py
+├── src/                        # Pipeline original
+│   ├── extract.py              # Extração via API do IBGE
+│   ├── transform.py            # Limpeza e transformação com Pandas
+│   ├── load.py                 # Carga no PostgreSQL via SQLAlchemy
+│   └── pipeline.py             # Orquestrador manual do fluxo ETL
+├── airflow/                    # Orquestração com Airflow
+│   ├── dags/
+│   │   ├── etl_ibge.py         # Definição da DAG
+│   │   └── etl/                # Módulos ETL usados pelo Airflow
+│   └── docker-compose.yaml     # Infraestrutura do Airflow
 ├── sql/
-│   ├── create_tables.sql
-│   └── queries_analise.sql
-├── .env.example
+│   ├── create_tables.sql       # Criação da tabela no banco
+│   └── queries_analise.sql     # Queries de validação e análise
+├── .env.example                # Modelo de variáveis de ambiente
 ├── .gitignore
-├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Como executar
+## Executando:
 
-### Pré-requisitos
-- Python 3.11+
-- Docker
+### Fase 1 — Pipeline local
 
-### 1. Clone o repositório
 ```bash
+# Clone o repositório
 git clone https://github.com/gxbryel05/etl-ibge-populacao.git
 cd etl-ibge-populacao
-```
 
-### 2. Crie e ative o ambiente virtual
-```bash
+# Crie e ative o ambiente virtual
 python -m venv venv
 venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
-```
 
-### 3. Instale as dependências
-```bash
+# Instale as dependências
 pip install -r requirements.txt
-```
 
-### 4. Configure as variáveis de ambiente
-```bash
+# Configure as variáveis de ambiente
 cp .env.example .env
 # Edite o .env com suas credenciais
-```
 
-### 5. Suba o PostgreSQL com Docker
-```bash
+# Suba o PostgreSQL com Docker
 docker run --name etl-postgres \
   -e POSTGRES_USER=seu_user \
   -e POSTGRES_PASSWORD=sua_senha \
   -e POSTGRES_DB=etl_db \
   -p 5432:5432 -d postgres:15
+
+# Execute o pipeline
+cd src && python pipeline.py
 ```
 
-### 6. Execute o pipeline
+### Fase 2 — Orquestração com Airflow
+
 ```bash
-cd src
-python pipeline.py
+# Entre na pasta do Airflow
+cd airflow
+
+# Suba os serviços
+docker compose up -d
+
+# Acesse a interface
+# http://localhost:8080 (usuário: airflow / senha: airflow)
+
+# Ative a DAG etl_ibge_municipios e clique em ▶
 ```
 
 ---
 
 ## Resultados e análises
 
-Após a execução, os dados ficam disponíveis para consulta no
-PostgreSQL. Algumas análises possíveis:
-
-**Municípios por região:**
 | Região        | Total |
 |---------------|-------|
 | Nordeste      | 1.794 |
@@ -124,20 +129,15 @@ PostgreSQL. Algumas análises possíveis:
 
 ---
 
-## Aprendizados e objetivos
+## Próximos passos
 
-Este projeto cobre os fundamentos de um pipeline ETL real.
-Como evolução natural, pretendo:
-
-- [ ] Orquestrar o pipeline com Apache Airflow
 - [ ] Migrar o armazenamento para Google BigQuery (GCP)
 - [ ] Adicionar camada de testes automatizados com Pytest
 - [ ] Criar dashboard interativo com Streamlit
 
 ---
 
-## Autor
+## Contatos
 
 **Gabryel Rosa Bomfim**
-[LinkedIn](https://linkedin.com/in/gabryel-rosa) •
-[GitHub](https://github.com/gxbryel05)
+[LinkedIn](https://linkedin.com/in/gabryel-rosa) • [GitHub](https://github.com/gxbryel05)
